@@ -119,7 +119,7 @@ const ChristmasCalendar = () => {
               return (
                 <div
                   key={index}
-                  className="p-4 sm:p-6 bg-cadmiumRed hover:bg-forestgreen hover:scale-110 cursor-pointer text-white text-center font-extrabold font-dancingScript text-xl sm:text-2xl rounded-lg"
+                  className="p-4 sm:p-6 bg-cadmiumRed hover:bg-green-300 hover:text-black hover:scale-110 cursor-pointer text-white text-center font-extrabold font-dancingScript text-xl sm:text-2xl rounded-lg"
                   onClick={() => handleDayClick(day)}
                 >
                   {day}

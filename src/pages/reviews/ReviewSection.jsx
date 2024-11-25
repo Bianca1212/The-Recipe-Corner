@@ -89,19 +89,20 @@ const ReviewsSection = ({ reviews }) => {
             />
           </div>
 
-          {/* Listează fiecare review */}
-          {reviews.map((review) => (
-            <div
-              key={review.id}
-              className="bg-white p-6 mb-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-            >
-              {review.reviewText && review.reviewText.trim() && (
-                <p className="text-xl font-nunito text-gray-800">
-                  Comments: {review.reviewText}
-                </p>
-              )}
-            </div>
-          ))}
+          {reviews.map(
+            (review) =>
+              // Verifică dacă reviewText nu este gol
+              review.reviewText?.trim() ? (
+                <div
+                  key={review.id}
+                  className="bg-white p-6 mb-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                >
+                  <p className="text-xl font-nunito text-gray-800">
+                    Comments: {review.reviewText}
+                  </p>
+                </div>
+              ) : null // Dacă reviewText este gol, nu se va reda nimic
+          )}
         </>
       ) : (
         <p className="text-xl font-nunito text-gray-500">

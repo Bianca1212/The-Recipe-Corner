@@ -13,13 +13,13 @@ const useSavedRecipes = () => {
     }
   };
 
-  const deleteSavedRecipe = async (recipeId) => {
+  const deleteSavedRecipe = async (id) => {
     try {
-      await axios.delete(`http://localhost:3000/savedRecipes/${recipeId}`);
-      localStorage.removeItem(`isSaved-${recipeId}`);
+      await axios.delete(`http://localhost:3000/savedRecipes/${id}`);
+      localStorage.removeItem(`isSaved-${id}`);
 
       setSavedRecipes((prevRecipes) =>
-        prevRecipes.filter((recipe) => recipe.id !== recipeId)
+        prevRecipes.filter((recipe) => recipe.id !== id)
       );
     } catch (error) {
       alert("An error occurred while deleting the recipe. " + error.message);

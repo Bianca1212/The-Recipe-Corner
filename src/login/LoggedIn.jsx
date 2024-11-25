@@ -5,7 +5,7 @@ export const LoggedIn = ({ children }) => {
   const { user } = useAuth();
 
   if (user) {
-    return <Navigate to="/" replace={true} />;
+    return <Navigate to="/home" replace={true} />;
   }
 
   return <>{children}</>;
