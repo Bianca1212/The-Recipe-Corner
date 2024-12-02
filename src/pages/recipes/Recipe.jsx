@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import ButtonSave from "../../components/ButtonSave";
+import SaveButton from "../../components/SaveButton";
 import NavigationButton from "../../components/NavigationButton";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -8,35 +8,59 @@ import { toast } from "react-toastify";
 const Recipe = ({ id, name, image }) => {
   const [isSaved, setIsSaved] = useState(false);
 
-  useEffect(() => {
-    // Verifică dacă rețeta a fost deja salvată la încărcarea componentei
-    const savedState = localStorage.getItem(`isSaved-${id}`);
-    if (savedState) {
-      setIsSaved(JSON.parse(savedState));
-    }
-  }, [id]);
-
   const dataToSave = {
     recipeId: id,
     name,
     image,
   };
 
-  const handleSaveRecipe = async () => {
+  const checkIfRecipeIsSaved = async () => {
     try {
-      const response = await axios.get("http://localhost:3000/savedRecipes");
-      const savedRecipes = response.data;
-      const isRecipeAlreadySaved = savedRecipes.some(
+      // Obținem rețetele salvate
+      const savedResponse = await axios.get(
+        "http://localhost:3000/savedRecipes"
+      );
+      const savedRecipes = savedResponse.data;
+      // Verificăm dacă rețeta există în savedRecipes
+      const isRecipeSaved = savedRecipes.some(
         (recipe) => recipe.recipeId === dataToSave.recipeId
       );
+      setIsSaved(isRecipeSaved);
+    } catch (error) {
+      alert("Error checking saved recipes: " + error.message);
+    }
+  };
 
-      if (isRecipeAlreadySaved) {
-        toast.error("Recipe already saved!");
+  const fetchRecipes = async () => {
+    try {
+      const response = await axios.get("https://dummyjson.com/recipes");
+      const recipes = response.data; // Asumăm că răspunsul conține lista de rețete
+      // Verificăm dacă rețeta cu recipeId există în lista de rețete
+      const isRecipeInAPI = recipes.some(
+        (recipe) => recipe.id === dataToSave.recipeId
+      );
+      if (!isRecipeInAPI) {
+        toast.error("Recipe not found in the API.");
+      }
+    } catch (error) {
+      toast.error("Error fetching recipes: " + error.message);
+    }
+  };
+
+  useEffect(() => {
+    // La montarea componentei, verificăm dacă rețeta este salvată
+    checkIfRecipeIsSaved();
+    // Verificăm dacă rețeta există pe API-ul extern
+    fetchRecipes();
+  }, [id]);
+
+  const handleSaveRecipe = async () => {
+    try {
+      if (isSaved) {
+        alert("Recipe already saved!");
       } else {
         await axios.post("http://localhost:3000/savedRecipes", dataToSave);
-        toast.success("The recipe was successfully saved!");
         setIsSaved(true);
-        localStorage.setItem(`isSaved-${id}`, JSON.stringify(true));
       }
     } catch (error) {
       toast.error("An error occurred:: " + error.message);
@@ -61,7 +85,7 @@ const Recipe = ({ id, name, image }) => {
                 See more
               </button>
             </NavigationButton>
-            <ButtonSave isSaved={isSaved} onClick={handleSaveRecipe} />
+            <SaveButton isSaved={isSaved} onClick={handleSaveRecipe} />
           </div>
         </div>
       </div>

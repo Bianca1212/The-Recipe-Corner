@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 
-const ButtonSave = ({ isSaved, onClick }) => {
+const SaveButton = ({ isSaved, onClick }) => {
   return (
     <button onClick={onClick}>
       {isSaved ? (
@@ -30,9 +30,9 @@ const ButtonSave = ({ isSaved, onClick }) => {
   );
 };
 
-ButtonSave.propTypes = {
+SaveButton.propTypes = {
   isSaved: PropTypes.bool.isRequired,
   onClick: PropTypes.func.isRequired,
 };
 
-export default ButtonSave;
+export default SaveButton;

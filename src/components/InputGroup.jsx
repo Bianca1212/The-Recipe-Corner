@@ -7,6 +7,7 @@ const InputGroup = ({
   value,
   placeholder,
   handleChange,
+  ref,
 }) => {
   return (
     <>
@@ -19,6 +20,7 @@ const InputGroup = ({
           value={value}
           placeholder={placeholder}
           onChange={handleChange}
+          ref={ref}
         />
       </div>
     </>
@@ -30,7 +32,8 @@ InputGroup.propTypes = {
   name: PropTypes.string,
   label: PropTypes.string,
   type: PropTypes.string,
-  value: PropTypes.string,
+  value: PropTypes.object,
   placeholder: PropTypes.string,
   handleChange: PropTypes.func,
+  ref: PropTypes.string,
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useClientsRecipes from "../../hooks/useClientsRecipes";
 import { NavigationLayout } from "../../layouts/NavigationLayout";
 import InputGroup from "../../components/InputGroup";
@@ -6,12 +6,12 @@ import TextAreaGroup from "../../components/TextAreaGroup";
 import useClientRecipe from "../../hooks/useClientRecipe";
 
 const FullClientRecipe = () => {
-  const { clientRecipe } = useClientRecipe();
-  const { updateRecipe, setClientsRecipes } = useClientsRecipes();
+  const { clientRecipe, getRecipe } = useClientRecipe();
+  const { updateRecipe, updatedRecipe, setUpdatedRecipe } = useClientsRecipes();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [updatedRecipe, setUpdatedRecipe] = useState("");
 
   const openModal = () => {
+    setUpdatedRecipe(clientRecipe); // preîncarcă rețeta pentru editare
     setIsModalOpen(true);
   };
 
@@ -19,58 +19,12 @@ const FullClientRecipe = () => {
     setIsModalOpen(false);
   };
 
-  useEffect(() => {
-    if (clientRecipe) {
-      setUpdatedRecipe({
-        name: clientRecipe.name,
-        cookTime: clientRecipe.cookTime,
-        servings: clientRecipe.servings,
-        ingredients: clientRecipe.ingredients.join("\n"),
-        directions: clientRecipe.directions.join("\n"),
-        nutritionFacts: clientRecipe.nutritionFacts.join("\n"),
-        imageUrl: clientRecipe.imageUrl,
-      });
-    }
-  }, [clientRecipe]);
-
   const handleUpdateRecipe = async (e) => {
     e.preventDefault();
-
-    // Pregătește datele actualizate
-    const updatedRecipeData = {
-      ...updatedRecipe,
-      ingredients: updatedRecipe.ingredients.split("\n"),
-      directions: updatedRecipe.directions.split("\n"),
-      nutritionFacts: updatedRecipe.nutritionFacts.split("\n"),
-    };
-
-    try {
-      // Trimite cererea de actualizare
-      const response = await updateRecipe(clientRecipe.id, updatedRecipeData);
-
-      if (response && response.data) {
-        // Actualizează local lista de rețete fără a încărca din nou toate datele
-        setClientsRecipes((prevRecipes) =>
-          prevRecipes.map((recipe) =>
-            recipe.id === clientRecipe.id
-              ? { ...recipe, ...response.data }
-              : recipe
-          )
-        );
-
-        // Închide modalul după actualizare
-        setIsModalOpen(false);
-      } else {
-        alert("Error: No data received from the server.");
-      }
-    } catch (error) {
-      alert(`Error updating recipe: ${error.message}`);
-    }
+    await updateRecipe(clientRecipe.id, updatedRecipe);
+    getRecipe();
+    closeModal();
   };
-
-  if (!clientRecipe) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <>

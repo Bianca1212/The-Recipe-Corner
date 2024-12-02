@@ -1,46 +1,65 @@
-import InputGroup from "../../components/InputGroup";
 import { NavigationLayout } from "../../layouts/NavigationLayout";
-import TextAreaGroup from "../../components/TextAreaGroup";
 import useClientsRecipes from "../../hooks/useClientsRecipes";
+import { useState } from "react";
 
 const AddRecipe = () => {
   const {
-    name,
-    setName,
-    cookTime,
-    setCookTime,
-    servings,
-    setServings,
-    ingredients,
-    setIngredients,
-    directions,
-    setDirections,
-    nutritionFacts,
-    setNutritionFacts,
-    imageUrl,
-    setImageUrl,
+    nameRef,
+    cookTimeRef,
+    servingsRef,
+    nutritionFactsRef,
+    imageUrlRef,
+    ingredientsRef,
+    directionsRef,
     addRecipe,
   } = useClientsRecipes();
 
-  const isFormValid = () => {
-    return (
-      name.trim() !== "" &&
-      cookTime.trim() !== "" &&
-      servings > 0 &&
-      ingredients.trim() !== "" &&
-      directions.trim() !== "" &&
-      nutritionFacts.trim() !== "" &&
-      imageUrl.trim() !== ""
-    );
+  const [errors, setErrors] = useState({});
+
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!nameRef.current.value) {
+      newErrors.name = "Recipe name is required!";
+    }
+
+    if (!cookTimeRef.current.value) {
+      newErrors.cookTime = "Cooking time is required!";
+    }
+    if (!servingsRef.current.value || servingsRef.current.value <= 0) {
+      newErrors.servings = "Servings should be a valid number greater than 0!";
+    }
+
+    if (!nutritionFactsRef.current.value) {
+      newErrors.nutritionFacts = "Nutrition facts are required!";
+    }
+
+    const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+    if (
+      !imageUrlRef.current.value &&
+      !urlPattern.test(imageUrlRef.current.value)
+    ) {
+      newErrors.imageUrl = "Image URL not valid!";
+    }
+
+    if (!ingredientsRef.current.value) {
+      newErrors.ingredients = "Ingredients are required!";
+    }
+
+    if (!directionsRef.current.value) {
+      newErrors.directions = "Directions are required!";
+    }
+
+    return newErrors;
   };
 
   const onSubmitRecipe = async (event) => {
     event.preventDefault();
-    if (!isFormValid()) {
-      alert("Please fill in all fields in the form.");
-      return;
+    const formErrors = validateForm();
+    setErrors(formErrors);
+    if (Object.keys(formErrors).length === 0) {
+      await addRecipe();
     }
-    await addRecipe();
   };
 
   return (
@@ -63,56 +82,41 @@ const AddRecipe = () => {
             onSubmit={onSubmitRecipe}
             className="flex flex-col justify-center items-center bg-linen mx-auto my-10 p-5 gap-6 border rounded-lg shadow-lg w-full max-w-lg transform hover:scale-105 transition-all duration-300"
           >
-            <InputGroup
-              label="Recipe name"
-              // name="name"
-              type="text"
-              value={name}
-              handleChange={(event) => setName(event.target.value)}
-            />
-            <InputGroup
-              label="Cooking time"
-              // name="cookTime"
-              type="text"
-              value={cookTime}
-              handleChange={(event) => setCookTime(event.target.value)}
-            />
-
-            <InputGroup
-              label="Servings number"
-              // name="servings"
-              type="number"
-              value={servings}
-              handleChange={(event) => setServings(event.target.value)}
-            />
-            <InputGroup
-              label="Nutrition Facts"
-              // name="nutritionFacts"
-              type="text"
-              value={nutritionFacts}
-              handleChange={(event) => setNutritionFacts(event.target.value)}
-            />
-            <InputGroup
-              label="Image URL"
-              // name="imageUrl"
-              type="text"
-              value={imageUrl}
-              handleChange={(event) => setImageUrl(event.target.value)}
-            />
-
-            <TextAreaGroup
-              name="Ingredients"
-              value={ingredients}
-              rows="5"
-              handleChange={(event) => setIngredients(event.target.value)}
-            />
-
-            <TextAreaGroup
-              name="Directions"
-              value={directions}
-              rows="5"
-              handleChange={(event) => setDirections(event.target.value)}
-            />
+            <label>Recipe name</label>
+            <input ref={nameRef} type="text" />
+            {errors.name && (
+              <p className="text-red-500 text-sm">{errors.name}</p>
+            )}
+            <label>Cooking time</label>
+            <input ref={cookTimeRef} type="text" />
+            {errors.cookTime && (
+              <p className="text-red-500 text-sm">{errors.cookTime}</p>
+            )}
+            <label>Servings number</label>
+            <input ref={servingsRef} type="number" />
+            {errors.servings && (
+              <p className="text-red-500 text-sm">{errors.servings}</p>
+            )}
+            <label>Nutrition Facts</label>
+            <input ref={nutritionFactsRef} type="text" />
+            {errors.nutritionFacts && (
+              <p className="text-red-500 text-sm">{errors.nutritionFacts}</p>
+            )}
+            <label>Image URL</label>
+            <input ref={imageUrlRef} type="text" />
+            {errors.imageUrl && (
+              <p className="text-red-500 text-sm">{errors.imageUrl}</p>
+            )}
+            <label>Ingredients</label>
+            <textarea ref={ingredientsRef} rows="5" />
+            {errors.ingredients && (
+              <p className="text-red-500 text-sm">{errors.ingredients}</p>
+            )}
+            <label>Directions</label>
+            <textarea ref={directionsRef} rows="5" />
+            {errors.directions && (
+              <p className="text-red-500 text-sm">{errors.directions}</p>
+            )}
 
             <button
               type="submit"

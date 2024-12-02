@@ -18,6 +18,6 @@ export default NavigationButton;
 NavigationButton.propTypes = {
   path: PropTypes.string,
   className: PropTypes.string,
-  children: PropTypes.array,
+  children: PropTypes.object,
   onClick: PropTypes.func,
 };

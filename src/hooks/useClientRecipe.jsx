@@ -6,23 +6,26 @@ const useClientRecipe = () => {
   const [clientRecipe, setClientRecipe] = useState("");
   const { id } = useParams();
 
-  useEffect(() => {
-    const getRecipe = async () => {
-      try {
-        if (id) {
-          const response = await axios.get(
-            `http://localhost:3000/clientsRecipes/${id}`
-          );
-          setClientRecipe(response.data);
-        }
-      } catch (error) {
-        console.error(error);
+  const getRecipe = async () => {
+    try {
+      if (id) {
+        const response = await axios.get(
+          `http://localhost:3000/clientsRecipes/${id}`
+        );
+        console.log("Updated recipe:", response.data); // Debugging line
+
+        setClientRecipe(response.data);
       }
-    };
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
     getRecipe();
   }, [id]);
 
-  return { clientRecipe };
+  return { clientRecipe, setClientRecipe, getRecipe };
 };
 
 export default useClientRecipe;

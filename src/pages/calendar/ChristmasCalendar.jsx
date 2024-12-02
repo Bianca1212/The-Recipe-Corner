@@ -10,6 +10,8 @@ const ChristmasCalendar = () => {
   ); // 11 este decembrie (luna 12 - 1)
   const [daysInMonth, setDaysInMonth] = useState([]);
   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const today = new Date();
+  console.log(today);
 
   // Crează calendarul pentru luna curentă
   const createCalendar = () => {
@@ -69,9 +71,21 @@ const ChristmasCalendar = () => {
     return ""; // Returnează un string gol dacă data curentă nu este validă
   };
 
+  const isDayValid = (day) => {
+    if (!day) return;
+    const dayDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      day
+    );
+    console.log(dayDate);
+
+    return dayDate <= today;
+  };
+
   const handleDayClick = (day) => {
     const currentMonth = currentDate.getMonth();
-    if (currentMonth === 11 && day) {
+    if (currentMonth === 11 && day && isDayValid(day)) {
       navigate(`/christmasRecipe/${day}`);
     }
   };
@@ -116,11 +130,16 @@ const ChristmasCalendar = () => {
           {/* Zilele calendarului */}
           <div className="grid grid-cols-7 gap-4 sm:gap-6 p-4">
             {daysInMonth.map((day, index) => {
+              const isValidDay = isDayValid(day);
               return (
                 <div
                   key={index}
-                  className="p-4 sm:p-6 bg-cadmiumRed hover:bg-green-300 hover:text-black hover:scale-110 cursor-pointer text-white text-center font-extrabold font-dancingScript text-xl sm:text-2xl rounded-lg"
-                  onClick={() => handleDayClick(day)}
+                  className={`p-4 sm:p-6 ${
+                    isValidDay
+                      ? "bg-cadmiumRed hover:bg-green-300 hover:text-black hover:scale-110 cursor-pointer"
+                      : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  } text-white text-center font-extrabold font-dancingScript text-xl sm:text-2xl rounded-lg`}
+                  onClick={() => isValidDay && handleDayClick(day)}
                 >
                   {day}
                 </div>

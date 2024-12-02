@@ -1,15 +1,24 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 const useClientsRecipes = () => {
   const [clientsRecipes, setClientsRecipes] = useState([]);
-  const [name, setName] = useState("");
-  const [cookTime, setCookTime] = useState("");
-  const [servings, setServings] = useState("");
-  const [ingredients, setIngredients] = useState("");
-  const [directions, setDirections] = useState("");
-  const [nutritionFacts, setNutritionFacts] = useState("");
-  const [imageUrl, setImageUrl] = useState("");
+  const nameRef = useRef("");
+  const cookTimeRef = useRef("");
+  const servingsRef = useRef("");
+  const ingredientsRef = useRef("");
+  const directionsRef = useRef("");
+  const nutritionFactsRef = useRef("");
+  const imageUrlRef = useRef("");
+  const [updatedRecipe, setUpdatedRecipe] = useState({
+    name: nameRef.current,
+    cookTime: cookTimeRef.current,
+    servings: servingsRef.current,
+    ingredients: ingredientsRef.current,
+    directions: directionsRef.current,
+    nutritionFacts: nutritionFactsRef.current,
+    imageUrl: imageUrlRef.current,
+  });
 
   const getClientsRecipes = async () => {
     try {
@@ -32,22 +41,22 @@ const useClientsRecipes = () => {
   const addRecipe = async () => {
     try {
       await axios.post(`http://localhost:3000/clientsRecipes`, {
-        name,
-        cookTime,
-        servings,
-        ingredients: ingredients.split("\n"),
-        directions: directions.split("\n"),
-        nutritionFacts: nutritionFacts.split("\n"),
-        imageUrl,
+        name: nameRef.current.value,
+        cookTime: cookTimeRef.current.value,
+        servings: servingsRef.current.value,
+        ingredients: ingredientsRef.current.value.split("\n"),
+        directions: directionsRef.current.value.split("\n"),
+        nutritionFacts: nutritionFactsRef.current.value.split("\n"),
+        imageUrl: imageUrlRef.current.value,
       });
 
-      setName("");
-      setCookTime("");
-      setServings("");
-      setIngredients("");
-      setDirections("");
-      setNutritionFacts("");
-      setImageUrl("");
+      nameRef.current.value = "";
+      cookTimeRef.current.value = "";
+      servingsRef.current.value = "";
+      ingredientsRef.current.value = "";
+      directionsRef.current.value = "";
+      nutritionFactsRef.current.value = "";
+      imageUrlRef.current.value = "";
     } catch (error) {
       alert("An error occurred while saving the recipe. " + error.message);
     }
@@ -55,14 +64,13 @@ const useClientsRecipes = () => {
 
   const updateRecipe = async (id, updatedRecipe) => {
     try {
-      await axios.put(
+      const response = await axios.put(
         `http://localhost:3000/clientsRecipes/${id}`,
         updatedRecipe
       );
-      // setClientsRecipes((prevRecipes) =>
-      //   prevRecipes.map((recipe) => (recipe.id === id ? response.data : recipe))
-      // );
-      await getClientsRecipes(); // Fetch the updated list of recipes
+      setClientsRecipes((prevRecipes) =>
+        prevRecipes.map((recipe) => (recipe.id === id ? response.data : recipe))
+      );
     } catch (error) {
       alert(`Error updating recipe: ${error.message}`);
     }
@@ -81,23 +89,19 @@ const useClientsRecipes = () => {
 
   return {
     clientsRecipes,
+    setClientsRecipes,
     addRecipe,
     updateRecipe,
+    updatedRecipe,
+    setUpdatedRecipe,
     deleteClientRecipe,
-    name,
-    setName,
-    cookTime,
-    setCookTime,
-    servings,
-    setServings,
-    ingredients,
-    setIngredients,
-    directions,
-    setDirections,
-    nutritionFacts,
-    setNutritionFacts,
-    imageUrl,
-    setImageUrl,
+    nameRef,
+    cookTimeRef,
+    servingsRef,
+    ingredientsRef,
+    directionsRef,
+    nutritionFactsRef,
+    imageUrlRef,
   };
 };
 
