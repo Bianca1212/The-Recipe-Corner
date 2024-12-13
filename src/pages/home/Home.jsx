@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { NavigationLayout } from "../layouts/NavigationLayout";
-import RandomRecipeFeature from "./recipes/RandomRecipeFeature";
-import RecipeCounter from "./recipes/RecipeCounter";
+import { NavigationLayout } from "../../layouts/NavigationLayout";
+import RandomRecipeFeature from "../recipes/RandomRecipeFeature";
+import RecipeCounter from "../recipes/RecipeCounter";
 
 const Home = () => {
   return (

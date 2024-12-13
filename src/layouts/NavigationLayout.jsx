@@ -2,12 +2,15 @@ import { useState } from "react";
 import NavigationButton from "../components/NavigationButton";
 import PropTypes from "prop-types";
 import { useAuth } from "../context/AuthContext";
+import NavigationLink from "./links/NavigationLink";
+import MobileNavigationLink from "./links/MobileNavigationLink";
+import DropdownNavigationLink from "./links/DropdownNavigationLink";
 
 export const NavigationLayout = ({ children }) => {
   const { user, logout } = useAuth(); // Obținem userul din contextul de autentificare
 
   const [isOpen, setIsOpen] = useState(false);
-  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false); // Adăugăm un state pentru meniul de cont
+  const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
 
   const toggleAccountMenu = () => {
     setIsAccountMenuOpen((prevState) => !prevState);
@@ -29,24 +32,11 @@ export const NavigationLayout = ({ children }) => {
             {/* Linkuri disponibile doar pentru utilizatori logați */}
             {user ? (
               <>
-                <NavigationButton
-                  path="/home"
-                  className="font-facultyGlyphic font-bold"
-                >
-                  Home
-                </NavigationButton>
-                <NavigationButton
-                  path="/recipes"
-                  className="font-facultyGlyphic font-bold"
-                >
-                  Explore
-                </NavigationButton>
-                <NavigationButton
-                  path="/calendar"
-                  className="font-facultyGlyphic font-bold"
-                >
+                <NavigationLink path={"/home"}>Home</NavigationLink>
+                <NavigationLink path={"/recipes"}>Explore</NavigationLink>
+                <NavigationLink path={"/calendar"}>
                   Christmas Calendar
-                </NavigationButton>
+                </NavigationLink>
                 <div className="relative group">
                   <div className="flex flex-row">
                     <NavigationButton onClick={toggleAccountMenu}>
@@ -69,31 +59,18 @@ export const NavigationLayout = ({ children }) => {
                   </div>
                   {isAccountMenuOpen && (
                     <div className="absolute bg-white text-black p-4 gap-2 mt-2 shadow-lg rounded flex flex-col w-40">
-                      <NavigationButton
-                        path="/savedRecipes"
-                        className="block px-4 py-2 cursor-pointer"
-                      >
+                      <DropdownNavigationLink path={"/savedRecipes"}>
                         Favorites
-                      </NavigationButton>
-                      <NavigationButton
-                        path="/recipeForm"
-                        className="block px-4 py-2 cursor-pointer"
-                      >
+                      </DropdownNavigationLink>
+                      <DropdownNavigationLink path={"/recipeForm"}>
                         Add Recipe
-                      </NavigationButton>
-                      <NavigationButton
-                        path="/myRecipes"
-                        className="block px-4 py-2 cursor-pointer"
-                      >
+                      </DropdownNavigationLink>
+                      <DropdownNavigationLink path={"/myRecipes"}>
                         My Recipes
-                      </NavigationButton>
-                      <NavigationButton
-                        path="/home"
-                        className="block px-4 py-2 cursor-pointer"
-                        onClick={logout}
-                      >
+                      </DropdownNavigationLink>
+                      <DropdownNavigationLink path={"/home"} onClick={logout}>
                         Logout
-                      </NavigationButton>
+                      </DropdownNavigationLink>
                     </div>
                   )}
                 </div>
@@ -101,36 +78,13 @@ export const NavigationLayout = ({ children }) => {
             ) : (
               // Linkuri disponibile pentru utilizatori neautentificați
               <>
-                <NavigationButton
-                  path="/home"
-                  className="font-facultyGlyphic font-bold"
-                >
-                  Home
-                </NavigationButton>
-                <NavigationButton
-                  path="/recipes"
-                  className="font-facultyGlyphic font-bold"
-                >
-                  Explore
-                </NavigationButton>
-                <NavigationButton
-                  path="/calendar"
-                  className="font-facultyGlyphic font-bold"
-                >
+                <NavigationLink path={"/home"}>Home</NavigationLink>
+                <NavigationLink path={"/recipes"}>Explore</NavigationLink>
+                <NavigationLink path={"/calendar"}>
                   Christmas Calendar
-                </NavigationButton>
-                <NavigationButton
-                  path="/login"
-                  className="font-facultyGlyphic font-bold"
-                >
-                  Login
-                </NavigationButton>
-                <NavigationButton
-                  path="/register"
-                  className="font-facultyGlyphic font-bold"
-                >
-                  Register
-                </NavigationButton>
+                </NavigationLink>
+                <NavigationLink path={"/login"}>Login</NavigationLink>
+                <NavigationLink path={"/register"}>Register</NavigationLink>
               </>
             )}
           </ul>
@@ -159,57 +113,33 @@ export const NavigationLayout = ({ children }) => {
             <ul className="flex flex-col items-center">
               {user ? (
                 <>
-                  <NavigationButton
-                    path="/home"
-                    className="inline-block px-6 py-3 rounded-full text-black font-semibold hover:shadow-lg"
-                  >
+                  <MobileNavigationLink path={"/home"}>
                     Home
-                  </NavigationButton>
-                  <NavigationButton
-                    path="/recipes"
-                    className="inline-block px-6 py-3 rounded-full text-black font-semibold hover:shadow-lg"
-                  >
+                  </MobileNavigationLink>
+                  <MobileNavigationLink path={"/recipes"}>
                     Explore
-                  </NavigationButton>
-                  <NavigationButton
-                    path="/calendar"
-                    className="inline-block px-6 py-3 rounded-full text-black font-semibold hover:shadow-lg"
-                  >
+                  </MobileNavigationLink>
+                  <MobileNavigationLink path={"/calendar"}>
                     Christmas Calendar
-                  </NavigationButton>
+                  </MobileNavigationLink>
                 </>
               ) : (
                 <>
-                  <NavigationButton
-                    path="/home"
-                    className="inline-block px-6 py-3 rounded-full text-black font-semibold hover:shadow-lg"
-                  >
+                  <MobileNavigationLink path={"/home"}>
                     Home
-                  </NavigationButton>
-                  <NavigationButton
-                    path="/recipes"
-                    className="inline-block px-6 py-3 rounded-full text-black font-semibold hover:shadow-lg"
-                  >
+                  </MobileNavigationLink>
+                  <MobileNavigationLink path={"/recipes"}>
                     Explore
-                  </NavigationButton>
-                  <NavigationButton
-                    path="/calendar"
-                    className="inline-block px-6 py-3 rounded-full text-black font-semibold hover:shadow-lg"
-                  >
+                  </MobileNavigationLink>
+                  <MobileNavigationLink path={"/calendar"}>
                     Christmas Calendar
-                  </NavigationButton>
-                  <NavigationButton
-                    path="/login"
-                    className="inline-block px-6 py-3 rounded-full text-black font-semibold hover:shadow-lg"
-                  >
+                  </MobileNavigationLink>
+                  <MobileNavigationLink path={"/login"}>
                     Login
-                  </NavigationButton>
-                  <NavigationButton
-                    path="/register"
-                    className="inline-block px-6 py-3 rounded-full text-black font-semibold hover:shadow-lg"
-                  >
+                  </MobileNavigationLink>
+                  <MobileNavigationLink path={"/register"}>
                     Register
-                  </NavigationButton>
+                  </MobileNavigationLink>
                 </>
               )}
             </ul>
@@ -221,6 +151,6 @@ export const NavigationLayout = ({ children }) => {
   );
 };
 
-NavigationButton.propTypes = {
+NavigationLayout.propTypes = {
   children: PropTypes.object,
 };
